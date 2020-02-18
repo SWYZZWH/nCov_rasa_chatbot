@@ -3,37 +3,37 @@ intents:
   - goodbye
   - affirm
   - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
-
+  - thankyou
+  
 actions:
 - utter_greet
-- utter_cheer_up
-- utter_did_that_help
-- utter_happy
 - utter_goodbye
 - utter_iamabot
+- utter_noworries
+- utter_functions
 
 responses:
   utter_greet:
-  - text: "Hey! How are you?"
-
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
-
-  utter_did_that_help:
-  - text: "Did that help you?"
-
-  utter_happy:
-  - text: "Great, carry on!"
+  - text: "你好！"
 
   utter_goodbye:
-  - text: "Bye"
+  - text: "再见！"
+  
+  utter_noworries:
+  - text: "不用谢！"
 
   utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
+  - text: "我是基于rasa的机器人！"
+  
+  utter_functions:
+  - text: |
+     我可以帮您解决如下问题：
+     新型肺炎的最新情况？
+     上海市新型肺炎的情况？
+     近一周上海市的感染趋势图？
+     有哪些新型肺炎的新闻？
+     有哪些谣言被澄清了？
+          
 
 session_config:
   session_expiration_time: 60
