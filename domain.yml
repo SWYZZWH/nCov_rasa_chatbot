@@ -1,40 +1,29 @@
+session_config:
+  session_expiration_time: 60.0
+  carry_over_slots_to_new_session: true
 intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - thankyou
-  
+- greet
+- goodbye
+- affirm
+- deny
+- thankyou
+- search_overall
+responses:
+  utter_greet:
+  - text: 你好！
+  utter_goodbye:
+  - text: 再见！
+  utter_noworries:
+  - text: 不用谢！
+  utter_iamabot:
+  - text: 我是基于rasa的机器人！
+  utter_functions:
+  - text: "我可以帮您解决如下问题：\n新型肺炎的最新情况？\n上海市新型肺炎的情况？\n近一周上海市的感染趋势图？\n有哪些新型肺炎的新闻？\n有哪些谣言被澄清了？\n\
+      \     \n"
 actions:
 - utter_greet
 - utter_goodbye
 - utter_iamabot
 - utter_noworries
 - utter_functions
-
-responses:
-  utter_greet:
-  - text: "你好！"
-
-  utter_goodbye:
-  - text: "再见！"
-  
-  utter_noworries:
-  - text: "不用谢！"
-
-  utter_iamabot:
-  - text: "我是基于rasa的机器人！"
-  
-  utter_functions:
-  - text: |
-     我可以帮您解决如下问题：
-     新型肺炎的最新情况？
-     上海市新型肺炎的情况？
-     近一周上海市的感染趋势图？
-     有哪些新型肺炎的新闻？
-     有哪些谣言被澄清了？
-          
-
-session_config:
-  session_expiration_time: 60
-  carry_over_slots_to_new_session: true
+- action_search_overall
