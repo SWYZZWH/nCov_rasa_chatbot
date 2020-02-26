@@ -28,7 +28,9 @@ api_patterns = {
 
 response_templates = {
     "overall":"全国疫情情况:\n现存确诊人数:{}\n累计确诊人数:{}\n疑似病例:{}\n累计治愈:{}\n死亡人数:{}",
-    "area":"{}疫情情况:\n现存确诊人数:{}\n累计确诊人数:{}\n疑似病例:{}\n累计治愈:{}\n死亡人数:{}"
+    "area":"{}疫情情况:\n现存确诊人数:{}\n累计确诊人数:{}\n疑似病例:{}\n累计治愈:{}\n死亡人数:{}",
+    "news":"最新新闻:\n",
+    "rumors":"最新谣言与辟谣:\n"
 }
 
 def create_url(api_pattern,paras):
@@ -45,7 +47,6 @@ def create_url(api_pattern,paras):
 
 
 class ActionSearchOverall(Action):
-    
     def name(self) -> Text:
         return "action_search_overall"
         
@@ -107,4 +108,79 @@ class ActionSearchOverall(Action):
             response_text = response_templates[api_pattern].format(*response_paras)
                   
         dispatcher.utter_message(text=response_text)
-        return [SlotSet("numbers",response_text)]
+        #eturn [SlotSet("numbers",response_text)]
+        return
+    
+class ActionSearchNews(Action):
+    def name(self) -> Text:
+        return "action_search_news"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        paras = {}
+        paras["num"] = "3" #api default is 10;should be able to change according to users' need
+        api_pattern = "news"
+        
+        #grab all information first,then filter
+        full_url = create_url(api_pattern,paras)
+        ret = requests.get(full_url).json()
+        
+        print(full_url)
+        print(ret)
+        
+        response_paras = []
+        if not ret.get("results"):
+            dispatcher.utter_message(text="错误！")
+            #return [SlotSet("numbers","null")]
+            return
+        else:
+            #support keyword search function
+            results = ret["results"]
+            response_text = response_templates[api_pattern]
+            for news in results:                        
+                response_text += news["title"] + "\n" 
+                # add more infomation of news
+                
+        dispatcher.utter_message(text=response_text)
+        #return [SlotSet("numbers",response_text)]
+        return
+    
+    
+class ActionSearchRumors(Action):
+    def name(self) -> Text:
+        return "action_search_rumors"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        paras = {}
+        paras["num"] = "3" #api default is 10;should be able to change according to users' need
+        api_pattern = "rumors"
+        
+        #grab all information first,then filter
+        full_url = create_url(api_pattern,paras)
+        ret = requests.get(full_url).json()
+        
+        print(full_url)
+        print(ret)
+        
+        response_paras = []
+        if not ret.get("results"):
+            dispatcher.utter_message(text="错误！")
+            #return [SlotSet("numbers","null")]
+            return
+        else:
+            #support keyword search function
+            results = ret["results"]
+            response_text = response_templates[api_pattern]
+            for rumor in results:                        
+                response_text += "谣言内容："+ rumor["title"] + "\n" 
+                response_text += "辟谣内容："+ rumor["mainSummary"]+ "\n"
+                # add more infomation of news
+                
+        dispatcher.utter_message(text=response_text)
+        #return [SlotSet("numbers",response_text)]
+        return

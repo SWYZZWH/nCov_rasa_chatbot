@@ -19,3 +19,11 @@
     - action_search_overall
 * thankyou
     - utter_noworries
+    
+## search_news
+* search_news
+    - action_search_news
+    
+## search_rumors
+* search_rumors
+    - action_search_rumors
