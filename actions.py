@@ -190,6 +190,8 @@ class ActionSearchRumors(Action):
         
 def draw_pic(save_path,title,x,x_label,y,y_label,y_dscr,z = None,z_dscr = None,d = None,d_dscr=None,c = None, c_dscr = None,legend = 'upper right'):
     # 设置画布大小
+    plt.rcParams['savefig.dpi'] = 2000 #图片像素
+    plt.rcParams['figure.dpi'] = 1500 #分辨率
     plt.figure(figsize=(40, 2))
     
     #tick_spacing = 1
@@ -234,8 +236,8 @@ def draw_pic(save_path,title,x,x_label,y,y_label,y_dscr,z = None,z_dscr = None,d
 
     # 图例显示及位置确定
     plt.legend(loc=legend)
-    #plt.rcParams['savefig.dpi'] = 2000 #图片像素
-    #plt.rcParams['figure.dpi'] = 1500 #分辨率
+    plt.rcParams['savefig.dpi'] = 2000 #图片像素
+    plt.rcParams['figure.dpi'] = 1500 #分辨率
     plt.savefig(save_path, bbox_inches='tight')
     
 
@@ -249,7 +251,6 @@ class ActionDrawPics(Action):
         domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
         ret = requests.get("http://wuliang.art/ncov/dnalysis/ncovMaps").json()
-        print(ret)
         
         if not ret.get("message") or ret["message"] != "SUCCESS":
             dispatcher.utter_message(text="错误！")
@@ -260,17 +261,19 @@ class ActionDrawPics(Action):
             x1_axis = [ data_info["date"] for data_info in chart[0]["datas"]][-14:]
             y1_axis = [ int(data_info["newconfirm"]) for data_info in chart[0]["datas"]][-14:] #新增确诊
             z1_axis = [ int(data_info["newsuspect"]) for data_info in chart[0]["datas"]][-14:] #新增疑似
-            save_path1 = r"C:\Users\84353\chatbox\nCov_chatbox\test1.jpg"
+            save_path1 = r"C:\Users\84353\chatbox\nCov_chatbox\test1.png"
             draw_pic(save_path1,chart[0]["name"],x1_axis,"日期",y1_axis,"人数","新增确诊",z1_axis,"新增疑似")
 
             x1_axis = [ data_info["date"] for data_info in chart[1]["datas"]][-14:]
             d1_axis = [ int(data_info["dead"]) for data_info in chart[1]["datas"]][-14:] #死亡
             c1_axis = [ int(data_info["heal"]) for data_info in chart[1]["datas"]][-14:] #治愈
-            save_path2 = r"C:\Users\84353\chatbox\nCov_chatbox\test2.jpg"
+            save_path2 = r"C:\Users\84353\chatbox\nCov_chatbox\test2.png"
             draw_pic(save_path2,chart[1]["name"],x1_axis,"日期",d1_axis,"人数","累计死亡",c1_axis,"累计治愈",legend="upper left")
             
         #show a picture
-        dispatcher.utter_message(image = save_path1)
-        dispatcher.utter_message(image = save_path2)
+        #dispatcher.utter_message(image = "https://i.imgur.com/nGF1K8f.jpg")
+        dispatcher.utter_message(text = "以上为近14天的新增确诊与疑似病例的变化趋势图",image = "https://raw.githubusercontent.com/SWYZZWH/nCov_rasa_chatbot/master/test1.png")
+        dispatcher.utter_message(text = "以上为近14天的累计治愈与死亡病例的变化趋势图",image = "https://raw.githubusercontent.com/SWYZZWH/nCov_rasa_chatbot/master/test2.png")
+        #dispatcher.utter_message(image = "file:///C:\Users\84353\chatbox\nCov_chatbox\test2.jpg")
         #return [SlotSet("numbers",response_text)]
         return

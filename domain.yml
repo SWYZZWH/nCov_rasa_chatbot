@@ -12,6 +12,8 @@ intents:
 - search_rumors
 - show_trend
 responses:
+  utter_cheer_up:
+  - text: 你好！
   utter_greet:
   - text: 你好！
   utter_goodbye:
@@ -33,3 +35,4 @@ actions:
 - action_search_news
 - action_search_rumors
 - action_draw_pics
+- utter_cheer_up
