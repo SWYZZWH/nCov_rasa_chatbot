@@ -250,25 +250,25 @@ class ActionDrawPics(Action):
         tracker: Tracker,
         domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        ret = requests.get("http://wuliang.art/ncov/dnalysis/ncovMaps").json()
+        #ret = requests.get("http://wuliang.art/ncov/dnalysis/ncovMaps").json()
         
-        if not ret.get("message") or ret["message"] != "SUCCESS":
-            dispatcher.utter_message(text="错误！")
-            return
-        else:
-            #extract ness infos and draw pictures
-            chart = ret["data"]["chartsTree"]
-            x1_axis = [ data_info["date"] for data_info in chart[0]["datas"]][-14:]
-            y1_axis = [ int(data_info["newconfirm"]) for data_info in chart[0]["datas"]][-14:] #新增确诊
-            z1_axis = [ int(data_info["newsuspect"]) for data_info in chart[0]["datas"]][-14:] #新增疑似
-            save_path1 = r"C:\Users\84353\chatbox\nCov_chatbox\test1.png"
-            draw_pic(save_path1,chart[0]["name"],x1_axis,"日期",y1_axis,"人数","新增确诊",z1_axis,"新增疑似")
+        #if not ret.get("message") or ret["message"] != "SUCCESS":
+        #    dispatcher.utter_message(text="错误！")
+        #    return
+        #else:
+        #    #extract ness infos and draw pictures
+        #    chart = ret["data"]["chartsTree"]
+        #    x1_axis = [ data_info["date"] for data_info in chart[0]["datas"]][-14:]
+        #    y1_axis = [ int(data_info["newconfirm"]) for data_info in chart[0]["datas"]][-14:] #新增确诊
+        #    z1_axis = [ int(data_info["newsuspect"]) for data_info in chart[0]["datas"]][-14:] #新增疑似
+        #    save_path1 = r"C:\Users\84353\chatbox\nCov_chatbox\test1.png"
+        #    draw_pic(save_path1,chart[0]["name"],x1_axis,"日期",y1_axis,"人数","新增确诊",z1_axis,"新增疑似")
 
-            x1_axis = [ data_info["date"] for data_info in chart[1]["datas"]][-14:]
-            d1_axis = [ int(data_info["dead"]) for data_info in chart[1]["datas"]][-14:] #死亡
-            c1_axis = [ int(data_info["heal"]) for data_info in chart[1]["datas"]][-14:] #治愈
-            save_path2 = r"C:\Users\84353\chatbox\nCov_chatbox\test2.png"
-            draw_pic(save_path2,chart[1]["name"],x1_axis,"日期",d1_axis,"人数","累计死亡",c1_axis,"累计治愈",legend="upper left")
+        #    x1_axis = [ data_info["date"] for data_info in chart[1]["datas"]][-14:]
+        #    d1_axis = [ int(data_info["dead"]) for data_info in chart[1]["datas"]][-14:] #死亡
+        #    c1_axis = [ int(data_info["heal"]) for data_info in chart[1]["datas"]][-14:] #治愈
+        #    save_path2 = r"C:\Users\84353\chatbox\nCov_chatbox\test2.png"
+        #    draw_pic(save_path2,chart[1]["name"],x1_axis,"日期",d1_axis,"人数","累计死亡",c1_axis,"累计治愈",legend="upper left")
             
         #show a picture
         #dispatcher.utter_message(image = "https://i.imgur.com/nGF1K8f.jpg")
