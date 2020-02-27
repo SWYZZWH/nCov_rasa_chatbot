@@ -1,7 +1,6 @@
 session_config:
   session_expiration_time: 60.0
   carry_over_slots_to_new_session: true
-  
 intents:
 - greet
 - goodbye
@@ -11,6 +10,7 @@ intents:
 - search_overall
 - search_news
 - search_rumors
+- show_trend
 responses:
   utter_greet:
   - text: 你好！
@@ -32,3 +32,4 @@ actions:
 - action_search_overall
 - action_search_news
 - action_search_rumors
+- action_draw_pics

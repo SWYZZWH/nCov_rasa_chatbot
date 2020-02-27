@@ -27,3 +27,8 @@
 ## search_rumors
 * search_rumors
     - action_search_rumors
+    
+## show_trend
+* show_trend
+    - action_draw_pics
+    

@@ -16,6 +16,9 @@ from rasa_sdk import Action
 from rasa_sdk.events import SlotSet, FollowupAction
 from rasa_sdk.forms import FormAction
 
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
 base_url = "https://lab.isaaclin.cn/nCoV/api/"
 
 api_patterns = {
@@ -33,8 +36,8 @@ response_templates = {
     "rumors":"最新谣言与辟谣:\n"
 }
 
-def create_url(api_pattern,paras):
-    url = base_url
+def create_url(api_pattern,paras,base = "https://lab.isaaclin.cn/nCoV/api/"):
+    url = base
     if api_pattern in api_patterns.keys():
         url += api_pattern
         
@@ -160,7 +163,7 @@ class ActionSearchRumors(Action):
         paras["num"] = "3" #api default is 10;should be able to change according to users' need
         api_pattern = "rumors"
         
-        #grab all information first,then filter
+        #get all information
         full_url = create_url(api_pattern,paras)
         ret = requests.get(full_url).json()
         
@@ -182,5 +185,92 @@ class ActionSearchRumors(Action):
                 # add more infomation of news
                 
         dispatcher.utter_message(text=response_text)
+        #return [SlotSet("numbers",response_text)]
+        return
+        
+def draw_pic(save_path,title,x,x_label,y,y_label,y_dscr,z = None,z_dscr = None,d = None,d_dscr=None,c = None, c_dscr = None,legend = 'upper right'):
+    # 设置画布大小
+    plt.figure(figsize=(40, 2))
+    
+    #tick_spacing = 1
+    fig, ax = plt.subplots(1, 1)
+    #ax.xaxis.set_major_locator(ticker.MaxNLocator(tick_spacing))
+
+    # 标题
+    plt.title(title)
+    # 横坐标描述
+    plt.xlabel(x_label)
+    # 纵坐标描述
+    plt.ylabel(y_label)
+
+    # 这里设置线宽、线型、线条颜色、点大小等参数 并为每个数据点加标签
+    ax.plot(x, y, label=y_dscr, linewidth=1, color='#0ebb67', marker='o', markerfacecolor='#0ebb67', markersize=2)
+    for a, b in zip(x, y):
+        plt.text(a, b, str(b), ha='center', va='bottom', fontsize=5)
+    if z:
+        ax.plot(x, z, label=z_dscr, linewidth=1, color='#2e9bed', marker='o', markerfacecolor='#2e9bed', markersize=2)
+        for a, b in zip(x, z):
+            plt.text(a, b, str(b), ha='center', va='bottom', fontsize=5)
+    if d:
+        ax.plot(x, d, label=d_dscr, linewidth=1, color='#3050ef', marker='o', markerfacecolor='#3050ef', markersize=2)
+        for a, b in zip(x, d):
+            plt.text(a, b, str(b), ha='center', va='bottom', fontsize=5)
+    if c:
+        ax.plot(x, c, label=c_dscr, linewidth=1, color='#fc921c', marker='o', markerfacecolor='#fc921c', markersize=2)
+        for a, b in zip(x, c):
+            plt.text(a, b, str(b), ha='center', va='bottom', fontsize=5)
+                
+    # 只给最后一个点加标签
+    #plt.text(x[-1], y[-1], y[-1], ha='center', va='bottom', fontsize=15)
+
+    # 旋转x轴标签
+    for label in ax.get_xticklabels():
+        label.set_rotation(30)  # 旋转30度
+        label.set_horizontalalignment('right')  # 向右旋转
+        
+    #显示中文
+    plt.rcParams['font.sans-serif']='SimHei'
+    plt.rcParams['axes.unicode_minus']=False
+
+    # 图例显示及位置确定
+    plt.legend(loc=legend)
+    #plt.rcParams['savefig.dpi'] = 2000 #图片像素
+    #plt.rcParams['figure.dpi'] = 1500 #分辨率
+    plt.savefig(save_path, bbox_inches='tight')
+    
+
+    
+class ActionDrawPics(Action):
+    def name(self) -> Text:
+        return "action_draw_pics"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        ret = requests.get("http://wuliang.art/ncov/dnalysis/ncovMaps").json()
+        print(ret)
+        
+        if not ret.get("message") or ret["message"] != "SUCCESS":
+            dispatcher.utter_message(text="错误！")
+            return
+        else:
+            #extract ness infos and draw pictures
+            chart = ret["data"]["chartsTree"]
+            x1_axis = [ data_info["date"] for data_info in chart[0]["datas"]][-14:]
+            y1_axis = [ int(data_info["newconfirm"]) for data_info in chart[0]["datas"]][-14:] #新增确诊
+            z1_axis = [ int(data_info["newsuspect"]) for data_info in chart[0]["datas"]][-14:] #新增疑似
+            save_path1 = r"C:\Users\84353\chatbox\nCov_chatbox\test1.jpg"
+            draw_pic(save_path1,chart[0]["name"],x1_axis,"日期",y1_axis,"人数","新增确诊",z1_axis,"新增疑似")
+
+            x1_axis = [ data_info["date"] for data_info in chart[1]["datas"]][-14:]
+            d1_axis = [ int(data_info["dead"]) for data_info in chart[1]["datas"]][-14:] #死亡
+            c1_axis = [ int(data_info["heal"]) for data_info in chart[1]["datas"]][-14:] #治愈
+            save_path2 = r"C:\Users\84353\chatbox\nCov_chatbox\test2.jpg"
+            draw_pic(save_path2,chart[1]["name"],x1_axis,"日期",d1_axis,"人数","累计死亡",c1_axis,"累计治愈",legend="upper left")
+            
+        #show a picture
+        dispatcher.utter_message(image = save_path1)
+        dispatcher.utter_message(image = save_path2)
         #return [SlotSet("numbers",response_text)]
         return
