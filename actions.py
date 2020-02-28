@@ -277,3 +277,68 @@ class ActionDrawPics(Action):
         #dispatcher.utter_message(image = "file:///C:\Users\84353\chatbox\nCov_chatbox\test2.jpg")
         #return [SlotSet("numbers",response_text)]
         return
+    
+
+intent_translation_table = {
+                       #"greet":"打招呼",
+                       #"goodbye":"说再见",
+                       #"affirm":"点头",
+                       #"deny":"说不对",
+                       #"thankyou":"说谢谢",
+                       "search_overall":"获取疫情的总体信息",
+                       "search_news":"看看有哪些新闻",
+                       "search_rumors":"看看有哪些谣言被澄清了",
+                       "show_trend":"看看趋势图",
+                       "out_of_scope ":"闲聊会儿"
+                   }   
+from rasa.core import actions
+from rasa.core import events
+from rasa.core.events import (
+    UserUtteranceReverted,
+    UserUttered,
+    ActionExecuted,
+    Event,
+    BotUttered,
+)
+#override default ask affirmation action
+class ActionAskAffirmation(Action):
+    """override default ask affirmation action
+    """
+
+    def name(self) -> Text:
+        return "action_default_ask_affirmation"
+
+    def run(
+        self,
+        #output_channel: "OutputChannel",
+        #nlg: "NaturalLanguageGenerator",
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        intent_to_affirm = tracker.current_state()["latest_message"]["intent"]["name"]
+        # an intent translation table should be offered
+        if intent_translation_table.get(intent_to_affirm):
+            intent_dscr = intent_translation_table[intent_to_affirm]
+            affirmation_message = f"您是想{intent_dscr}吗?"
+            message = {
+                "text": affirmation_message,
+                "buttons": [
+                    {"title": "没错", "payload": f"/{intent_to_affirm}"},
+                    {"title": "摇头", "payload": f"/out_of_scope"},
+                ],
+             }
+        else:
+            affirmation_message = f"抱歉，我没理解您的意图。\n但您可以让我做这些事情："
+            message = {
+                "text": affirmation_message,
+                "buttons": [
+                    {"title": "显示今日疫情简讯", "payload": f"/search_overall"},
+                    {"title": "显示疫情趋势图", "payload": f"/show_trend"},
+                    {"title": "显示新闻", "payload": f"/search_news"},
+                    {"title": "显示最新谣言与辟谣", "payload": f"/search_rumors"},
+                ],
+             } 
+        dispatcher.utter_message(text = message["text"],buttons = message["buttons"])
+        return 
+        #return [create_bot_utterance(message)]

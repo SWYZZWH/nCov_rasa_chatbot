@@ -1,11 +1,24 @@
-# Configuration for Rasa NLU.
-# https://rasa.com/docs/rasa/nlu/components/
 language: zh
-pipeline: supervised_embeddings
 
-# Configuration for Rasa Core.
-# https://rasa.com/docs/rasa/core/policies/
+pipeline:
+  - name: "MitieNLP"
+    model: "data/total_word_feature_extractor_zh.dat"
+  - name: "JiebaTokenizer"
+    #自定义词典的保存路径，先不指定
+    #dictionary_path: "./jieba_userdict" 
+  - name: "MitieEntityExtractor"
+  - name: "EntitySynonymMapper"
+  - name: "RegexFeaturizer"
+  - name: "MitieFeaturizer"
+  - name: "SklearnIntentClassifier"
+  
 policies:
   - name: MemoizationPolicy
   - name: KerasPolicy
   - name: MappingPolicy
+  - name: TwoStageFallbackPolicy
+    nlu_threshold: 0.3
+    core_threshold: 0.3
+    #fallback_core_action_name: "action_ask_affirmation"
+    #fallback_nlu_action_name: "action_ask_affirmation"
+    #deny_suggestion_intent_name: "out_of_scope"
