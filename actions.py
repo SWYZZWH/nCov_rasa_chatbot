@@ -18,6 +18,7 @@ from rasa_sdk.forms import FormAction
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import time
 
 base_url = "https://lab.isaaclin.cn/nCoV/api/"
 
@@ -32,7 +33,7 @@ api_patterns = {
 response_templates = {
     "overall":"全国疫情情况:\n现存确诊人数:{}\n累计确诊人数:{}\n疑似病例:{}\n累计治愈:{}\n死亡人数:{}",
     "area":"{}疫情情况:\n现存确诊人数:{}\n累计确诊人数:{}\n疑似病例:{}\n累计治愈:{}\n死亡人数:{}",
-    "news":"最新新闻:\n",
+    "news":"{}最新新闻:\n",
     "rumors":"最新谣言与辟谣:\n"
 }
 
@@ -60,7 +61,7 @@ class ActionSearchOverall(Action):
         
         location = tracker.get_slot("location").strip(" ")
         paras = {}
-        if location:
+        if location != "全国":
             api_pattern = "area"
             paras["province"] = location
         else:
@@ -115,7 +116,9 @@ class ActionSearchOverall(Action):
         dispatcher.utter_message(text=response_text)
         #return [SlotSet("numbers",response_text)]
         return
-    
+
+
+  
 class ActionSearchNews(Action):
     def name(self) -> Text:
         return "action_search_news"
@@ -124,9 +127,17 @@ class ActionSearchNews(Action):
         tracker: Tracker,
         domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
+        location = tracker.get_slot("location").strip(" ")
+        num = 5 #can be adjusted by user
         paras = {}
-        paras["num"] = "3" #api default is 10;should be able to change according to users' need
         api_pattern = "news"
+        
+        if not location or location == "全国":
+            #by default we get international news here although location is "中国"
+            paras["num"] = "{}".format(num)
+        else:
+            paras["num"] = "all"
+            
         
         #grab all information first,then filter
         full_url = create_url(api_pattern,paras)
@@ -135,18 +146,28 @@ class ActionSearchNews(Action):
         print(full_url)
         print(ret)
         
-        response_paras = []
+        #response_paras = []
         if not ret.get("results"):
-            dispatcher.utter_message(text="错误！")
+            dispatcher.utter_message(text="不好意思，我没能找到相关的新闻！")
             #return [SlotSet("numbers","null")]
             return
         else:
-            #support keyword search function
-            results = ret["results"]
-            response_text = response_templates[api_pattern]
-            for news in results:                        
-                response_text += news["title"] + "\n" 
-                # add more infomation of news
+            #wait to support keyword search function
+            related_news = [] 
+            if not location or location == "全国":
+                related_news = ret["results"]
+                response_text = response_templates[api_pattern].format("")
+            else:
+                related_news = [news for news in ret["results"] if news["provinceName"] == location]
+                related_news = related_news[:num] #show up to num=5 pieces of news
+                response_text = response_templates[api_pattern].format(location)
+                
+            #construct news information
+            for news in related_news:                        
+                response_text += "新闻标题："+ news["title"] + "\n" 
+                response_text += "发布时间："+ time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(news["pubDate"]/1000)) +"\n"
+                response_text += "来源链接："+ news["sourceUrl"] + "\n"
+                #wait to add more infomation of news
                 
         dispatcher.utter_message(text=response_text)
         #return [SlotSet("numbers",response_text)]
@@ -162,7 +183,7 @@ class ActionSearchRumors(Action):
         domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
         paras = {}
-        paras["num"] = "3" #api default is 10;should be able to change according to users' need
+        paras["num"] = "5" #api default is 10;should be able to change according to users' need
         api_pattern = "rumors"
         
         #get all information
@@ -274,8 +295,8 @@ class ActionDrawPics(Action):
             
         #show a picture
         #dispatcher.utter_message(image = "https://i.imgur.com/nGF1K8f.jpg")
-        dispatcher.utter_message(text = "以上为近14天的新增确诊与疑似病例的变化趋势图",image = "https://raw.githubusercontent.com/SWYZZWH/nCov_rasa_chatbot/master/test1.png")
-        dispatcher.utter_message(text = "以上为近14天的累计治愈与死亡病例的变化趋势图",image = "https://raw.githubusercontent.com/SWYZZWH/nCov_rasa_chatbot/master/test2.png")
+        dispatcher.utter_message(text = "图片链接：https://wx2.sinaimg.cn/mw690/006Bji4dly1gcdluju1ggj314p0u0npd.jpg",image = "https://wx2.sinaimg.cn/mw690/006Bji4dly1gcdluju1ggj314p0u0npd.jpg")
+        dispatcher.utter_message(text = "图片链接：https://wx4.sinaimg.cn/mw690/006Bji4dly1gcdlujv5j1j31580u0kjl.jpg",image = "https://wx4.sinaimg.cn/mw690/006Bji4dly1gcdlujv5j1j31580u0kjl.jpg")
         #dispatcher.utter_message(image = "file:///C:\Users\84353\chatbox\nCov_chatbox\test2.jpg")
         #return [SlotSet("numbers",response_text)]
         return

@@ -18,6 +18,7 @@ entities:
 slots:
   location:
     type: unfeaturized
+    initial_value: 全国
 responses:
   utter_cheer_up:
   - text: 你好！
@@ -30,11 +31,11 @@ responses:
   utter_iamabot:
   - text: 我是基于rasa的机器人！
   utter_ask_rephrase:
-  - text: 不好意思，我不太理解您的意图，您能重述一遍吗？
-  utter_ask_location:
-  - text: 您想查询什么地方的疫情信息？
+  - text: 额，那刚才那句话您能说得再清楚一点吗？（我比较憨-_-||）
+  utter_change_location:
+  - text: 您也可以问我国内其他省份和其他国家的疫情信息，如输入：上海市
   utter_default:
-  - text: "对不起，我不太理解您的意思。\n您可以这样问我问题：\n新型肺炎的最新情况？\n上海市新型肺炎的情况？\n近一周上海市的感染趋势图？\n有哪些新型肺炎的新闻？\n\
+  - text: "对不起，我不太理解您的意思。\n您可以这样问我问题：\n新型肺炎的最新情况？\n我想了解湖北省的疫情情况？\n新型肺炎的趋势怎么样？\n有哪些新闻？\n\
       有哪些谣言被澄清了？\n     \n"
   utter_functions:
   - text: "您可以这样问我问题：\n新型肺炎的最新情况？\n上海市新型肺炎的情况？\n近一周上海市的感染趋势图？\n有哪些新型肺炎的新闻？\n有哪些谣言被澄清了？\n\
@@ -53,4 +54,5 @@ actions:
 - utter_cheer_up
 - utter_ask_rephrase
 - utter_default
+- utter_change_location
 - action_default_ask_affirmation

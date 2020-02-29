@@ -35,9 +35,10 @@
 
 ## intent:search_overall
 - 新型肺炎的最新情况？
-- 新型肺炎情况怎么样了?
-- 今天全国新增多少确诊患者?
-- 现在有多少人感染新型肺炎？
+- 新型肺炎在[我国](location)的最新情况?
+- 新型肺炎在[中国](location)情况怎么样了?
+- 今天[全国](location)新增多少确诊患者?
+- 现在[国内](location)有多少人感染新型肺炎？
 -  能告诉我[上海市](location)的疫情情况吗？
 -  我想了解[丹麦](location)的疫情情况
 -  [云南省](location)的疫情状况怎么样
@@ -127,9 +128,13 @@
 -  [黑龙江省](location)的疫情状况怎么样
 
 ## intent:search_news
-- 今天的新闻有哪些？
+- 有哪些新闻？
 - 新闻
 - 今天发生了哪些大事？
+- [湖北省](location)的新闻
+- [上海市](location)新闻
+- [全国](location)发生了哪些大事？
+- 在[湖北省](location)出现了哪些新闻？
 
 ## intent:search_rumors
 - 有哪些谣言？
@@ -145,6 +150,7 @@
 - 肺炎的历史
 
 ## intent:inform_location
+- [全国](location)
 - [上海市](location)
 - [丹麦](location)
 - [云南省](location)
@@ -233,6 +239,13 @@
 - [黎巴嫩](location)
 - [黑龙江省](location)
 
+
+## synonym: 全国
+ -  我国
+ -  国内
+ -  祖国
+ -  中国
+ -  中华人民共和国
 ## synonym: 钻石公主号游轮
  -  钻石公主
  -  钻石公主号
