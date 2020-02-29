@@ -12,6 +12,12 @@ intents:
 - search_rumors
 - show_trend
 - out_of_scope
+- inform_location
+entities:
+- location
+slots:
+  location:
+    type: unfeaturized
 responses:
   utter_cheer_up:
   - text: 你好！
@@ -25,6 +31,8 @@ responses:
   - text: 我是基于rasa的机器人！
   utter_ask_rephrase:
   - text: 不好意思，我不太理解您的意图，您能重述一遍吗？
+  utter_ask_location:
+  - text: 您想查询什么地方的疫情信息？
   utter_default:
   - text: "对不起，我不太理解您的意思。\n您可以这样问我问题：\n新型肺炎的最新情况？\n上海市新型肺炎的情况？\n近一周上海市的感染趋势图？\n有哪些新型肺炎的新闻？\n\
       有哪些谣言被澄清了？\n     \n"
@@ -37,6 +45,7 @@ actions:
 - utter_iamabot
 - utter_noworries
 - utter_functions
+- utter_ask_location
 - action_search_overall
 - action_search_news
 - action_search_rumors

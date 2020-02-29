@@ -11,14 +11,16 @@
 * thankyou
     - utter_noworries
 
-## happy_path
-* greet
-    - utter_greet
-    - utter_functions
+## happy_path1
+* search_overall{"location":"上海市"}
+     - action_search_overall
+
+## happy_path2
 * search_overall
+    - utter_ask_location
+* inform_location
     - action_search_overall
-* thankyou
-    - utter_noworries
+
     
 ## search_news
 * search_news

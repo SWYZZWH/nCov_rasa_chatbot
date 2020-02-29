@@ -4,8 +4,7 @@ pipeline:
   - name: "MitieNLP"
     model: "data/total_word_feature_extractor_zh.dat"
   - name: "JiebaTokenizer"
-    #自定义词典的保存路径，先不指定
-    #dictionary_path: "./jieba_userdict" 
+    dictionary_path: "./jieba_userdict" 
   - name: "MitieEntityExtractor"
   - name: "EntitySynonymMapper"
   - name: "RegexFeaturizer"

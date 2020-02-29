@@ -58,15 +58,14 @@ class ActionSearchOverall(Action):
         domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
         
-        #location = tracker.get_slot("location")
-        location = None
+        location = tracker.get_slot("location").strip(" ")
         paras = {}
         if location:
             api_pattern = "area"
-            #paras["province"] = province
+            paras["province"] = location
         else:
             api_pattern = "overall"
-        latest = 1
+        #latest = 1
         #paras["latest"] = latest
         
         
@@ -77,9 +76,10 @@ class ActionSearchOverall(Action):
         print(ret)
         
         response_paras = []
-        if not ret.get("results"):
+        if not ret.get("results") or ret.get("success") != True:
             dispatcher.utter_message(text="错误！")
-            return [SlotSet("numbers","null")]
+            #return [SlotSet("numbers","null")]
+            return
         else:
             #extract infos according to search mode
             results = ret["results"]
@@ -97,7 +97,8 @@ class ActionSearchOverall(Action):
                                 break
                 if not loc_match:
                     dispatcher.utter_message(text="未找到该地区的信息！")
-                    return [SlotSet("overall_info","null")] 
+                    #return [SlotSet("overall_info","null")] 
+                    return
                             
                 response_paras.append(location)
             else:
@@ -105,13 +106,14 @@ class ActionSearchOverall(Action):
             print(loc_match)
                 
             #print results
+            
             response_paras += [loc_match["currentConfirmedCount"],loc_match["confirmedCount"],loc_match["suspectedCount"],\
                                   loc_match["curedCount"],loc_match["deadCount"]]
             
             response_text = response_templates[api_pattern].format(*response_paras)
                   
         dispatcher.utter_message(text=response_text)
-        #eturn [SlotSet("numbers",response_text)]
+        #return [SlotSet("numbers",response_text)]
         return
     
 class ActionSearchNews(Action):
