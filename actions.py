@@ -15,6 +15,15 @@ import requests
 from rasa_sdk import Action
 from rasa_sdk.events import SlotSet, FollowupAction
 from rasa_sdk.forms import FormAction
+from rasa.core import actions
+from rasa.core import events
+from rasa.core.events import (
+    UserUtteranceReverted,
+    UserUttered,
+    ActionExecuted,
+    Event,
+    BotUttered,
+)
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -245,9 +254,6 @@ def draw_pic(save_path,title,x,x_label,y,y_label,y_dscr,z = None,z_dscr = None,d
         for a, b in zip(x, c):
             plt.text(a, b, str(b), ha='center', va='bottom', fontsize=5)
                 
-    # 只给最后一个点加标签
-    #plt.text(x[-1], y[-1], y[-1], ha='center', va='bottom', fontsize=15)
-
     # 旋转x轴标签
     for label in ax.get_xticklabels():
         label.set_rotation(30)  # 旋转30度
@@ -314,15 +320,7 @@ intent_translation_table = {
                        "show_trend":"看看趋势图",
                        "out_of_scope ":"闲聊会儿"
                    }   
-from rasa.core import actions
-from rasa.core import events
-from rasa.core.events import (
-    UserUtteranceReverted,
-    UserUttered,
-    ActionExecuted,
-    Event,
-    BotUttered,
-)
+
 #override default ask affirmation action
 class ActionAskAffirmation(Action):
     """override default ask affirmation action
