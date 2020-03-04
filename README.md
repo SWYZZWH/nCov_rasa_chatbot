@@ -11,15 +11,18 @@
 - 本项目基于最新版Rasa与Rasa x
 
 - 会话管理使用的是rasa-core，rasa的pipeline配置如下：
-      pipeline:
-        - name: "MitieNLP"
-          model: "data/total_word_feature_extractor_zh.dat"
-        - name: "JiebaTokenizer"
-          dictionary_path: "./jieba_userdict" 
-        - name: "EntitySynonymMapper" 
-        - name: "RegexFeaturizer"
-        - name: "MitieFeaturizer"
-        - name: "SklearnIntentClassifier"
+  ```
+  pipeline:
+    - name: "MitieNLP"
+      model: "data/total_word_feature_extractor_zh.dat"
+    - name: "JiebaTokenizer"
+      dictionary_path: "./jieba_userdict" 
+    - name: "EntitySynonymMapper" 
+    - name: "RegexFeaturizer"
+    - name: "MitieFeaturizer"
+    - name: "SklearnIntentClassifier"
+  ```
+
   注意，这里的total_word_feature_extractor_zh.dat需要另外下载并放在/data目录下，建议去作者[GaoQ1](<https://github.com/GaoQ1>)处下载
   
 - policy配置如下
@@ -91,8 +94,6 @@
 1. 使用conda创建虚拟环境
 
 1. 打开两个终端，切换目录到项目根目录下，并都激活虚拟环境
-
-1. 
 
 1. 一个终端启动Action Server
 
