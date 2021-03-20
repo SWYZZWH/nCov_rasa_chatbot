@@ -87,7 +87,7 @@ itsdangerous==1.1.0
 jaraco.itertools==5.0.0
 jedi==0.14.1
 jieba==0.42.1
-Jinja2==2.11.1
+Jinja2==2.11.3
 jmespath==0.9.4
 jsonpickle==1.2
 jsonschema==3.2.0
