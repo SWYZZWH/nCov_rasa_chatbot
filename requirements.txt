@@ -252,7 +252,7 @@ wcwidth==0.1.8
 webencodings==0.5.1
 webexteamssdk==1.2
 websocket-client==0.54.0
-websockets==8.1
+websockets==9.1
 Werkzeug==0.16.1
 win-inet-pton==1.1.0
 wincertstore==0.2
